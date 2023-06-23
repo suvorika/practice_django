@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+# django-debug-toolbar
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 """
 Django settings for practice_django project.
 
@@ -14,6 +20,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+# python-dotenv
+# https://pypi.org/project/python-dotenv/
+from dotenv import load_dotenv, find_dotenv
+from django.contrib.messages import constants as messages
+
+# .env в корне проекта
+# Loading ENV
+env_path = Path(".") / ".env"
+
+# env_path = '.test.env'
+# https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
+load_dotenv(find_dotenv())
+# End python-dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,11 +42,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%7(nw2=l10257&(gg!op)--^3hef^jracie%-p3bmvvrjc8mit"
+# SECRET_KEY = "django-insecure-%7(nw2=l10257&(gg!op)--^3hef^jracie%-p3bmvvrjc8mit"
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
+# DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = False
 
+# разрешенные хосты
 ALLOWED_HOSTS = ["*"]
 
 
@@ -38,8 +63,30 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",
     "django.contrib.staticfiles",
+    # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
+    "debug_toolbar",
+    # https://prognote.ru/web-dev/back-end/django-library-channels-for-websocket/?ysclid=lj8nzwx2iv322247887
+    # 'channels',
+    # https://docs.djangoproject.com/en/4.2/ref/contrib/humanize/
+    "django.contrib.humanize",
+    "django_extensions",
+    # pascages install
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
+    "crispy_forms",
+    "ckeditor",
+    # мои приложения
+    "blog.apps.BlogConfig",  # для сигналов, меток
+    # https://github.com/un1t/django-cleanup
+    "django_cleanup.apps.CleanupConfig",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -49,6 +96,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # django-debug-toolbar
 ]
 
 ROOT_URLCONF = "practice_django.urls"
@@ -56,7 +104,7 @@ ROOT_URLCONF = "practice_django.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,6 +116,52 @@ TEMPLATES = [
         },
     },
 ]
+
+# django-allauth
+# https://django-allauth.readthedocs.io/en/latest/installation.html
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    },
+    "github": {
+        "SCOPE": [
+            "user",
+            "repo",
+            "read:org",
+        ],
+    },
+    # 'discord': {
+    #     # From https://developer.twitter.com
+    #     'APP': {
+    #         'client_id': os.environ['TWITTER_API_KEY'],
+    #         'secret': os.environ['TWITTER_API_SECRET'],
+    #         'key': os.environ['TWITTER_APP_ID'],
+    #     }
+    # },
+    # 'twitter': {
+    #     # From https://developer.twitter.com
+    #     'APP': {
+    #         'client_id': os.environ['TWITTER_API_KEY'],
+    #         'secret': os.environ['TWITTER_API_SECRET'],
+    #         'key': os.environ['TWITTER_APP_ID'],
+    #     }
+    # },
+}
+
+# End django-allauth
 
 WSGI_APPLICATION = "practice_django.wsgi.application"
 
@@ -139,3 +233,53 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# django-crispy-forms
+# https://django-crispy-forms.readthedocs.io/en/latest/install.html
+
+# CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "uni_form"
+# End django-crispy-forms
+
+# django-ckeditor
+CKEDITOR_CONFIGS = {
+    "default": {
+        # 'toolbar': 'full',
+        # 'height': 300,
+        "width": 300,
+    },
+}
+# End django-ckeditor
+
+# django-channels
+"""
+ASGI_APPLICATION = "practice_django.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
+}
+"""
+# End django-channels
+
+
+# email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
+# End Email
+
+GOOGLE_RECAPTCHA_SECRET_KEY = os.getenv("GOOGLE_RECAPTCHA_SECRET_KEY")
+
+MESSAGE_TAGS = {
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}
+
+#  в производстве убрать.
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
