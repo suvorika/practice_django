@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "ckeditor",
     # мои приложения
     "blog.apps.BlogConfig",  # для сигналов, меток
+    "discussions",
     # https://github.com/un1t/django-cleanup
     "django_cleanup.apps.CleanupConfig",
 ]

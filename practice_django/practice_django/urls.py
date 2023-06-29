@@ -23,9 +23,10 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include("blog.urls")),
+    path("", include("blog.urls")),
     # path("ckeditor/", include("ckeditor_uploader.urls")),
     path("accounts/", include("allauth.urls")),
+    path("discussions/", include("discussions.urls")),
 ]
 
 if settings.DEBUG:
