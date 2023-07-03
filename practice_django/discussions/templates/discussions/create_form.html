@@ -1,8 +1,16 @@
 {% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-{% block content_block %}
+{% block content_blog %}
 
 <h2>Что, хотите обсудить? </h2>
-<form action=""> </form>
+<form action="" method="post">
+    {{form.media}}
+    {{form|crispy}}
+    {% csrf_token %}
+
+<input type="submit" vale="Сохранить">
+</form>
 
 {% endblock %}

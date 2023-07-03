@@ -22,6 +22,7 @@ class UserDiscussionListView(ListView):
         queryset = Discussion.objects.filter(author=user)
         context = super().get_context_data(**kwargs)
         context["discussions_post_user_list"] = queryset.order_by("-date_created")
+        return context
 
 
 class DiscussionDetailView(DetailView):
@@ -39,3 +40,8 @@ def discussion_create(request):
             new_discussion = form.save(commit=False)
             new_discussion.author = request.user
             new_discussion.save()
+            messages.success(request, "Дискуссия успешно добавлена")
+            return redirect(new_discussion.get_absolute_url())
+    else:
+        form = DiscussionCreateForm()
+    return render(request, "discussions/create_form.html", {"form": form})

@@ -1,0 +1,26 @@
+{% extands "blog/base.html" %}
+
+{% block title %} Discussion {% endblock %}
+{% block content_blog %}
+
+
+<div class="row">
+    <div class="col-lg-10 col-xl-8 offset-lg-1 offset-xl-2">
+        {% if messages %}
+        {% if user.is_authenticated %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="into">
+            <h1 class="text-center" data-bss-hover-animate="pulse">&nbsp;</h1>
+            {{discussion_detail.title}}
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}
