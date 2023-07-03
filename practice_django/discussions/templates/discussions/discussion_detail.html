@@ -8,6 +8,10 @@
     <div class="col-lg-10 col-xl-8 offset-lg-1 offset-xl-2">
         {% if messages %}
         {% if user.is_authenticated %}
+            {{user}}
+        {% else %}
+
+        {% endif %}
         <ul class="messages">
             {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>

@@ -51,3 +51,9 @@ class PostDetailView(DetailView):
     model = Post
     # template_name = "blog/post_detail.html"
     context_object_name = "blog_post_detail"
+
+
+def index(request):
+    context = {"posts": Post.objects.all()}
+    return render(request, "blog/index.html")
+

@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     # мои приложения
     "blog.apps.BlogConfig",  # для сигналов, меток
     "discussions",
+    "forms_app",
     # https://github.com/un1t/django-cleanup
     "django_cleanup.apps.CleanupConfig",
 ]
@@ -261,7 +262,8 @@ CHANNEL_LAYERS = {
 }
 """
 # End django-channels
-
+# LOGIN_REDIRECT_URL = "blog-home"
+# LOGIN_URL = "account_login"
 
 # email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

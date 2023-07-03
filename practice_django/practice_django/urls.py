@@ -27,6 +27,7 @@ urlpatterns = [
     # path("ckeditor/", include("ckeditor_uploader.urls")),
     path("accounts/", include("allauth.urls")),
     path("discussions/", include("discussions.urls")),
+    path("form/", include("forms_app.urls")),
 ]
 
 if settings.DEBUG:
@@ -34,7 +35,6 @@ if settings.DEBUG:
 
 if settings.DEBUG:
     import debug_toolbar
-
     urlpatterns = [
         path("__debug__/", include(debug_toolbar.urls)),
     ] + urlpatterns
